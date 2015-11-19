@@ -40,7 +40,6 @@ func (c *Client) RegisterTaskDefinition(service, image string) (string, error) {
 func (c *Client) UpdateService(cluster, service, arn string) error {
 	input := &ecs.UpdateServiceInput{
 		Cluster:        aws.String(cluster),
-		DesiredCount:   aws.Int64(1),
 		Service:        aws.String(service),
 		TaskDefinition: aws.String(arn),
 	}
