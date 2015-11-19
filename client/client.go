@@ -10,7 +10,7 @@ type Client struct {
 	svc *ecs.ECS
 }
 
-func New(region) *Client {
+func New(region string) *Client {
 	sess := session.New(&aws.Config{Region: aws.String(region)})
 	svc := ecs.New(sess)
 	return &Client{

@@ -1,0 +1,69 @@
+{
+	"ImportPath": "github.com/travisjeffery/ecs-update",
+	"GoVersion": "go1.5.1",
+	"Deps": [
+		{
+			"ImportPath": "github.com/alecthomas/template",
+			"Rev": "b867cc6ab45cece8143cfcc6fc9c77cf3f2c23c0"
+		},
+		{
+			"ImportPath": "github.com/alecthomas/units",
+			"Rev": "2efee857e7cfd4f3d0138cc3cbb1b4966962b93a"
+		},
+		{
+			"ImportPath": "github.com/aws/aws-sdk-go/aws",
+			"Comment": "v0.10.4-24-g60ba8bc",
+			"Rev": "60ba8bced910637baa3949bf939a4db1e1bd735e"
+		},
+		{
+			"ImportPath": "github.com/aws/aws-sdk-go/private/endpoints",
+			"Comment": "v0.10.4-24-g60ba8bc",
+			"Rev": "60ba8bced910637baa3949bf939a4db1e1bd735e"
+		},
+		{
+			"ImportPath": "github.com/aws/aws-sdk-go/private/protocol/json/jsonutil",
+			"Comment": "v0.10.4-24-g60ba8bc",
+			"Rev": "60ba8bced910637baa3949bf939a4db1e1bd735e"
+		},
+		{
+			"ImportPath": "github.com/aws/aws-sdk-go/private/protocol/jsonrpc",
+			"Comment": "v0.10.4-24-g60ba8bc",
+			"Rev": "60ba8bced910637baa3949bf939a4db1e1bd735e"
+		},
+		{
+			"ImportPath": "github.com/aws/aws-sdk-go/private/protocol/rest",
+			"Comment": "v0.10.4-24-g60ba8bc",
+			"Rev": "60ba8bced910637baa3949bf939a4db1e1bd735e"
+		},
+		{
+			"ImportPath": "github.com/aws/aws-sdk-go/private/signer/v4",
+			"Comment": "v0.10.4-24-g60ba8bc",
+			"Rev": "60ba8bced910637baa3949bf939a4db1e1bd735e"
+		},
+		{
+			"ImportPath": "github.com/aws/aws-sdk-go/private/waiter",
+			"Comment": "v0.10.4-24-g60ba8bc",
+			"Rev": "60ba8bced910637baa3949bf939a4db1e1bd735e"
+		},
+		{
+			"ImportPath": "github.com/aws/aws-sdk-go/service/ecs",
+			"Comment": "v0.10.4-24-g60ba8bc",
+			"Rev": "60ba8bced910637baa3949bf939a4db1e1bd735e"
+		},
+		{
+			"ImportPath": "github.com/go-ini/ini",
+			"Comment": "v0-48-g060d7da",
+			"Rev": "060d7da055ba6ec5ea7a31f116332fe5efa04ce0"
+		},
+		{
+			"ImportPath": "github.com/jmespath/go-jmespath",
+			"Comment": "0.2.2",
+			"Rev": "3433f3ea46d9f8019119e7dd41274e112a2359a9"
+		},
+		{
+			"ImportPath": "gopkg.in/alecthomas/kingpin.v2",
+			"Comment": "v2.1.6",
+			"Rev": "6e0b900c7f00daa54d47a64b5ff6a9c745c3ba06"
+		}
+	]
+}
