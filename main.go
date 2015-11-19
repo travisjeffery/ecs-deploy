@@ -3,21 +3,22 @@ package main
 import (
 	"fmt"
 	
-	"github.com/travisjeffery/deploy/client"
+	"github.com/travisjeffery/ecs-update/client"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 var (
-	service = kingpin.Flag("service", "Set service name to update.").Required().String()
-	image = kingpin.Flag("image", "Set image to update the service to.").Required().String()
-	cluster = kingpin.Flag("cluster", "Set cluster name with the service to update.").Default("default").String()
+	service = kingpin.Flag("service", "Name of Service to update.").Required().String()
+	image = kingpin.Flag("image", "Name of Docker image to run.").Required().String()
+	cluster = kingpin.Flag("cluster", "Name of ECS cluster.").Default("default").String()
+	region = kingpin.Flag("region", "Name of AWS region.").Default("us-east-1").String()
 )
 
 func main() {
 	kingpin.UsageTemplate(kingpin.CompactUsageTemplate).Version("1.0").Author("Travis Jeffery")
 	kingpin.CommandLine.Help = "Update ECS service."
 	kingpin.Parse()
-	c := client.New()
+	c := client.New(*region)
 
 	arn, err := c.RegisterTaskDefinition(*service, *image)
 	if err != nil {
