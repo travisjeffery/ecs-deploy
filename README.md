@@ -4,7 +4,7 @@ Update ECS service to a Docker image.
 
 ## Install
 
-[Download the binary](https://github.com/travisjeffery/ecs-update/releases/download/v1.0.0/ecs-update), or go get:
+[Download the binary](https://github.com/travisjeffery/ecs-update/releases/latest), or go get:
 
 ```
 $ go get github.com/travisjeffery/ecs-update
