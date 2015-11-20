@@ -24,7 +24,7 @@ func (c *Client) RegisterTaskDefinition(service, image string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defs[0].Image = aws.String("taplytics/app:master")
+	defs[0].Image = aws.String(image)
 	input := &ecs.RegisterTaskDefinitionInput{
 		Family:               aws.String(service),
 		ContainerDefinitions: defs,
