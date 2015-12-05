@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/travisjeffery/ecs-deploy/client"
 	"gopkg.in/alecthomas/kingpin.v2"
@@ -13,7 +15,8 @@ var (
 	tag     = kingpin.Flag("tag", "Tag of Docker image to run.").String()
 	cluster = kingpin.Flag("cluster", "Name of ECS cluster.").Default("default").String()
 	region  = kingpin.Flag("region", "Name of AWS region.").Default("us-east-1").String()
-	count   = kingpin.Flag("count", "Desired count of instantiations to place and run in service.").Int64()
+	count   = kingpin.Flag("count", "Desired count of instantiations to place and run in service. Defaults to existing running count.").Default("-1").Int64()
+	nowait  = kingpin.Flag("nowait", "Disable waiting for all task definitions to start running").Bool()
 )
 
 func main() {
@@ -21,7 +24,9 @@ func main() {
 	kingpin.CommandLine.Help = "Update ECS service."
 	kingpin.Parse()
 
-	c := client.New(region)
+	prefix := fmt.Sprintf("%s/%s ", *cluster, *service)
+	logger := log.New(os.Stderr, prefix, log.LstdFlags)
+	c := client.New(region, logger)
 
 	arn := ""
 	var err error
@@ -29,18 +34,24 @@ func main() {
 	if image != nil {
 		arn, err = c.RegisterTaskDefinition(service, image, tag)
 		if err != nil {
-			fmt.Printf("register task definition error: %s\n", err.Error())
+			logger.Printf("[error] register task definition: %s\n", err)
 			return
 		}
 	}
 
-	return
-
 	err = c.UpdateService(cluster, service, count, &arn)
 	if err != nil {
-		fmt.Printf("update service error: %s\n", err.Error())
+		logger.Printf("[error] update service: %s\n", err)
 		return
 	}
 
-	fmt.Printf("update service success")
+	if *nowait == false {
+		err := c.Wait(cluster, service, &arn)
+		if err != nil {
+			logger.Printf("[error] wait: %s\n", err)
+			return
+		}
+	}
+
+	logger.Printf("[info] update service success")
 }

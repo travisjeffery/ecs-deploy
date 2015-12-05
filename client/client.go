@@ -13,15 +13,17 @@ import (
 
 type Client struct {
 	svc          *ecs.ECS
-	log          *log.Logger
+	logger       *log.Logger
 	pollInterval time.Duration
 }
 
-func New(region *string) *Client {
+func New(region *string, logger *log.Logger) *Client {
 	sess := session.New(&aws.Config{Region: region})
 	svc := ecs.New(sess)
 	return &Client{
-		svc: svc,
+		svc:          svc,
+		pollInterval: time.Second * 5,
+		logger:       logger,
 	}
 }
 
@@ -54,7 +56,7 @@ func (c *Client) UpdateService(cluster, service *string, count *int64, arn *stri
 		Cluster: cluster,
 		Service: service,
 	}
-	if count != nil {
+	if *count != -1 {
 		input.DesiredCount = count
 	}
 	if arn != nil {
@@ -65,14 +67,40 @@ func (c *Client) UpdateService(cluster, service *string, count *int64, arn *stri
 }
 
 // Wait waits for the service to finish being updated.
-func (c *Client) Wait(cluster, service *string, count *int64, arn *string) error {
+func (c *Client) Wait(cluster, service, arn *string) error {
 	t := time.NewTicker(c.pollInterval)
-	return nil
 	for {
 		select {
 		case <-t.C:
+			s, err := c.GetDeployment(cluster, service, arn)
+			if err != nil {
+				return err
+			}
+			c.logger.Printf("[info] --> desired: %d, pending: %d, running: %d", *s.DesiredCount, *s.PendingCount, *s.RunningCount)
+			if *s.RunningCount == *s.DesiredCount {
+				return nil
+			}
 		}
 	}
+}
+
+// GetDeployment gets the deployment for the arn.
+func (c *Client) GetDeployment(cluster, service, arn *string) (*ecs.Deployment, error) {
+	input := &ecs.DescribeServicesInput{
+		Cluster:  cluster,
+		Services: []*string{service},
+	}
+	output, err := c.svc.DescribeServices(input)
+	if err != nil {
+		return nil, err
+	}
+	ds := output.Services[0].Deployments
+	for _, d := range ds {
+		if *d.TaskDefinition == *arn {
+			return d, nil
+		}
+	}
+	return nil, nil
 }
 
 // GetContainerDefinitions get container definitions of the service.
