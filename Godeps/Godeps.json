@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/travisjeffery/ecs-update",
+	"ImportPath": "github.com/travisjeffery/ecs-deploy",
 	"GoVersion": "go1.5.1",
 	"Deps": [
 		{

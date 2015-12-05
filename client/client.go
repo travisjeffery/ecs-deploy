@@ -1,13 +1,20 @@
 package client
 
 import (
+	"fmt"
+	"log"
+	"strings"
+	"time"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ecs"
 )
 
 type Client struct {
-	svc *ecs.ECS
+	svc          *ecs.ECS
+	log          *log.Logger
+	pollInterval time.Duration
 }
 
 func New(region *string) *Client {
@@ -19,12 +26,17 @@ func New(region *string) *Client {
 }
 
 // RegisterTaskDefinition updates the existing task definition's image.
-func (c *Client) RegisterTaskDefinition(service, image *string) (string, error) {
+func (c *Client) RegisterTaskDefinition(service, image, tag *string) (string, error) {
 	defs, err := c.GetContainerDefinitions(service)
 	if err != nil {
 		return "", err
 	}
-	defs[0].Image = image
+	for _, d := range defs {
+		if strings.HasPrefix(*d.Image, *image) {
+			i := fmt.Sprintf("%s:%s", *image, *tag)
+			d.Image = &i
+		}
+	}
 	input := &ecs.RegisterTaskDefinitionInput{
 		Family:               service,
 		ContainerDefinitions: defs,
@@ -39,17 +51,28 @@ func (c *Client) RegisterTaskDefinition(service, image *string) (string, error) 
 // UpdateService updates the service to use the new task definition.
 func (c *Client) UpdateService(cluster, service *string, count *int64, arn *string) error {
 	input := &ecs.UpdateServiceInput{
-		Cluster:        cluster,
-		Service:        service,
+		Cluster: cluster,
+		Service: service,
 	}
 	if count != nil {
 		input.DesiredCount = count
 	}
-	if arn != "" {
+	if arn != nil {
 		input.TaskDefinition = arn
 	}
 	_, err := c.svc.UpdateService(input)
 	return err
+}
+
+// Wait waits for the service to finish being updated.
+func (c *Client) Wait(cluster, service *string, count *int64, arn *string) error {
+	t := time.NewTicker(c.pollInterval)
+	return nil
+	for {
+		select {
+		case <-t.C:
+		}
+	}
 }
 
 // GetContainerDefinitions get container definitions of the service.

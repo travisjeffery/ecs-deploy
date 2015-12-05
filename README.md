@@ -1,19 +1,19 @@
-# ecs-update
+# ecs-deploy
 
 Update ECS service to a Docker image.
 
 ## Install
 
-[Download the binary](https://github.com/travisjeffery/ecs-update/releases/latest), or go get:
+[Download the binary](https://github.com/travisjeffery/ecs-deploy/releases/latest), or go get:
 
 ```
-$ go get github.com/travisjeffery/ecs-update
+$ go get github.com/travisjeffery/ecs-deploy
 ```
 
 ## Example
 
 ```
-$ ecs-update --service=app --image=travisjeffery/app:1.0.0
+$ ecs-deploy --service=app --image=travisjeffery/app:1.0.0
 update service success
 ```
 
