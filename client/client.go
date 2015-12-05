@@ -10,8 +10,8 @@ type Client struct {
 	svc *ecs.ECS
 }
 
-func New(region string) *Client {
-	sess := session.New(&aws.Config{Region: aws.String(region)})
+func New(region *string) *Client {
+	sess := session.New(&aws.Config{Region: region})
 	svc := ecs.New(sess)
 	return &Client{
 		svc: svc,
@@ -19,14 +19,14 @@ func New(region string) *Client {
 }
 
 // RegisterTaskDefinition updates the existing task definition's image.
-func (c *Client) RegisterTaskDefinition(service, image string) (string, error) {
+func (c *Client) RegisterTaskDefinition(service, image *string) (string, error) {
 	defs, err := c.GetContainerDefinitions(service)
 	if err != nil {
 		return "", err
 	}
-	defs[0].Image = aws.String(image)
+	defs[0].Image = image
 	input := &ecs.RegisterTaskDefinitionInput{
-		Family:               aws.String(service),
+		Family:               service,
 		ContainerDefinitions: defs,
 	}
 	resp, err := c.svc.RegisterTaskDefinition(input)
@@ -37,21 +37,25 @@ func (c *Client) RegisterTaskDefinition(service, image string) (string, error) {
 }
 
 // UpdateService updates the service to use the new task definition.
-func (c *Client) UpdateService(cluster, service string, count int64, arn string) error {
+func (c *Client) UpdateService(cluster, service *string, count *int64, arn *string) error {
 	input := &ecs.UpdateServiceInput{
-		Cluster:        aws.String(cluster),
-		DesiredCount:   aws.Int64(count),
-		Service:        aws.String(service),
-		TaskDefinition: aws.String(arn),
+		Cluster:        cluster,
+		Service:        service,
+	}
+	if count != nil {
+		input.DesiredCount = count
+	}
+	if arn != "" {
+		input.TaskDefinition = arn
 	}
 	_, err := c.svc.UpdateService(input)
 	return err
 }
 
 // GetContainerDefinitions get container definitions of the service.
-func (c *Client) GetContainerDefinitions(service string) ([]*ecs.ContainerDefinition, error) {
+func (c *Client) GetContainerDefinitions(service *string) ([]*ecs.ContainerDefinition, error) {
 	output, err := c.svc.DescribeTaskDefinition(&ecs.DescribeTaskDefinitionInput{
-		TaskDefinition: aws.String(service),
+		TaskDefinition: service,
 	})
 	if err != nil {
 		return nil, err

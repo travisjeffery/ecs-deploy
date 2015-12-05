@@ -9,10 +9,10 @@ import (
 
 var (
 	service = kingpin.Flag("service", "Name of Service to update.").Required().String()
-	image   = kingpin.Flag("image", "Name of Docker image to run.").Required().String()
+	image   = kingpin.Flag("image", "Name of Docker image to run.").String()
 	cluster = kingpin.Flag("cluster", "Name of ECS cluster.").Default("default").String()
 	region  = kingpin.Flag("region", "Name of AWS region.").Default("us-east-1").String()
-	count   = kingpin.Flag("count", "Desired count of instantiations to place and run in service.").Default("1").Int64()
+	count   = kingpin.Flag("count", "Desired count of instantiations to place and run in service.").Int64()
 )
 
 func main() {
@@ -20,15 +20,20 @@ func main() {
 	kingpin.CommandLine.Help = "Update ECS service."
 	kingpin.Parse()
 
-	c := client.New(*region)
+	c := client.New(region)
 
-	arn, err := c.RegisterTaskDefinition(*service, *image)
-	if err != nil {
-		fmt.Printf("register task definition error: %s\n", err.Error())
-		return
+	arn := ""
+	var err error
+
+	if image != nil {
+		arn, err = c.RegisterTaskDefinition(service, image)
+		if err != nil {
+			fmt.Printf("register task definition error: %s\n", err.Error())
+			return
+		}
 	}
 
-	err = c.UpdateService(*cluster, *service, *count, arn)
+	err = c.UpdateService(cluster, service, count, arn)
 	if err != nil {
 		fmt.Printf("update service error: %s\n", err.Error())
 		return
