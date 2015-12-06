@@ -3,9 +3,11 @@
 		"default",
 		"publish-github"
 	],
+	"BuildConstraints": "windows linux darwin",
 	"PackageVersion": "1.1.0",
 	"TaskSettings": {
 		"publish-github": {
+			"bc": "windows linux darwin",
 			"owner": "travisjeffery",
 			"repository": "ecs-deploy"
 		}
