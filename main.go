@@ -14,7 +14,7 @@ var (
 	image   = kingpin.Flag("image", "Name of Docker image to run.").String()
 	tag     = kingpin.Flag("tag", "Tag of Docker image to run.").String()
 	cluster = kingpin.Flag("cluster", "Name of ECS cluster.").Default("default").String()
-	region  = kingpin.Flag("region", "Name of AWS region.").Default("us-east-1").String()
+	region  = kingpin.Flag("region", "Name of AWS region.").Default("us-east-1").OverrideDefaultFromEnvar("AWS_DEFAULT_REGION").String()
 	count   = kingpin.Flag("count", "Desired count of instantiations to place and run in service. Defaults to existing running count.").Default("-1").Int64()
 	nowait  = kingpin.Flag("nowait", "Disable waiting for all task definitions to start running").Bool()
 )
