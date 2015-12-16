@@ -28,8 +28,8 @@ func New(region *string, logger *log.Logger) *Client {
 }
 
 // RegisterTaskDefinition updates the existing task definition's image.
-func (c *Client) RegisterTaskDefinition(service, image, tag *string) (string, error) {
-	defs, err := c.GetContainerDefinitions(service)
+func (c *Client) RegisterTaskDefinition(task, image, tag *string) (string, error) {
+	defs, err := c.GetContainerDefinitions(task)
 	if err != nil {
 		return "", err
 	}
@@ -40,7 +40,7 @@ func (c *Client) RegisterTaskDefinition(service, image, tag *string) (string, er
 		}
 	}
 	input := &ecs.RegisterTaskDefinitionInput{
-		Family:               service,
+		Family:               task,
 		ContainerDefinitions: defs,
 	}
 	resp, err := c.svc.RegisterTaskDefinition(input)
@@ -104,9 +104,9 @@ func (c *Client) GetDeployment(cluster, service, arn *string) (*ecs.Deployment, 
 }
 
 // GetContainerDefinitions get container definitions of the service.
-func (c *Client) GetContainerDefinitions(service *string) ([]*ecs.ContainerDefinition, error) {
+func (c *Client) GetContainerDefinitions(task *string) ([]*ecs.ContainerDefinition, error) {
 	output, err := c.svc.DescribeTaskDefinition(&ecs.DescribeTaskDefinitionInput{
-		TaskDefinition: service,
+		TaskDefinition: task,
 	})
 	if err != nil {
 		return nil, err
