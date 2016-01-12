@@ -30,6 +30,7 @@ Deploy ECS service.
 Flags:
   --help                Show context-sensitive help (also try --help-long and --help-man).
   --service=SERVICE     Name of Service to update.
+  --task=TASK-DEF       Name of Task Definition to update. Defaults to service.
   --image=IMAGE         Name of Docker image to run.
   --tag=TAG             Tag of Docker image to run.
   --cluster="default"   Name of ECS cluster.
