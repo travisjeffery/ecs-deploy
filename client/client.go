@@ -27,18 +27,23 @@ func New(region *string, logger *log.Logger) *Client {
 	}
 }
 
-// RegisterTaskDefinition updates the existing task definition's image.
-func (c *Client) RegisterTaskDefinition(task, image, tag *string) (string, error) {
+// RegisterTaskDefinition creates new task definition
+// image:tag is explicitly set to the task definition if it's provided.
+func (c *Client) RegisterTaskDefinition(task, image *string, tag *string) (string, error) {
 	defs, err := c.GetContainerDefinitions(task)
 	if err != nil {
 		return "", err
 	}
-	for _, d := range defs {
-		if strings.HasPrefix(*d.Image, *image) {
-			i := fmt.Sprintf("%s:%s", *image, *tag)
-			d.Image = &i
+
+	if *image != "" && *tag != "" {
+		for _, d := range defs {
+			if strings.HasPrefix(*d.Image, *image) {
+				i := fmt.Sprintf("%s:%s", *image, *tag)
+				d.Image = &i
+			}
 		}
 	}
+
 	input := &ecs.RegisterTaskDefinitionInput{
 		Family:               task,
 		ContainerDefinitions: defs,
