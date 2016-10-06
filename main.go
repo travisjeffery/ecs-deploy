@@ -21,7 +21,7 @@ var (
 )
 
 func main() {
-	kingpin.UsageTemplate(kingpin.CompactUsageTemplate).Version("1.0.3").Author("Travis Jeffery")
+	kingpin.UsageTemplate(kingpin.CompactUsageTemplate).Version("1.2.0").Author("Travis Jeffery")
 	kingpin.CommandLine.Help = "Update ECS service."
 	kingpin.Parse()
 
