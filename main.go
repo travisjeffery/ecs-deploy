@@ -38,12 +38,10 @@ func main() {
 	arn := ""
 	var err error
 
-	if image != nil {
-		arn, err = c.RegisterTaskDefinition(task, image, tag)
-		if err != nil {
-			logger.Printf("[error] register task definition: %s\n", err)
-			return
-		}
+	arn, err = c.RegisterTaskDefinition(task, image, tag)
+	if err != nil {
+		logger.Printf("[error] register task definition: %s\n", err)
+		return
 	}
 
 	err = c.UpdateService(cluster, service, count, &arn)
