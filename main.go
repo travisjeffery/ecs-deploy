@@ -11,8 +11,8 @@ import (
 
 var (
 	service = kingpin.Flag("service", "Name of Service to update.").Required().String()
-	image   = kingpin.Flag("image", "Name of Docker image to run.").String()
-	tag     = kingpin.Flag("tag", "Tag of Docker image to run.").String()
+	image   = kingpin.Flag("image", "Name of Docker image to run.").Strings()
+	tag     = kingpin.Flag("tag", "Tag of Docker image to run.").Strings()
 	cluster = kingpin.Flag("cluster", "Name of ECS cluster.").Default("default").String()
 	task    = kingpin.Flag("task", "Name of task definition. Defaults to service name").String()
 	region  = kingpin.Flag("region", "Name of AWS region.").Default("us-east-1").OverrideDefaultFromEnvar("AWS_DEFAULT_REGION").String()

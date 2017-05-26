@@ -28,20 +28,28 @@ func New(region *string, logger *log.Logger) *Client {
 }
 
 // RegisterTaskDefinition updates the existing task definition's image.
-func (c *Client) RegisterTaskDefinition(task, image, tag *string) (string, error) {
-	defs, err := c.GetContainerDefinitions(task)
+func (c *Client) RegisterTaskDefinition(task *string, image, tag *[]string) (string, error) {
+	output, err := c.svc.DescribeTaskDefinition(&ecs.DescribeTaskDefinitionInput{
+		TaskDefinition: task,
+	})
 	if err != nil {
 		return "", err
 	}
-	for _, d := range defs {
-		if strings.HasPrefix(*d.Image, *image) {
-			i := fmt.Sprintf("%s:%s", *image, *tag)
-			d.Image = &i
+	for _, d := range output.TaskDefinition.ContainerDefinitions {
+		for j := range *image {
+			if strings.HasPrefix(*d.Image, (*image)[j]) {
+				i := fmt.Sprintf("%s:%s", (*image)[j], (*tag)[j])
+				d.Image = &i
+			}
 		}
 	}
 	input := &ecs.RegisterTaskDefinitionInput{
-		Family:               task,
-		ContainerDefinitions: defs,
+		ContainerDefinitions: output.TaskDefinition.ContainerDefinitions,
+		Family:               output.TaskDefinition.Family,
+		NetworkMode:          output.TaskDefinition.NetworkMode,
+		PlacementConstraints: output.TaskDefinition.PlacementConstraints,
+		TaskRoleArn:          output.TaskDefinition.TaskRoleArn,
+		Volumes:              output.TaskDefinition.Volumes,
 	}
 	resp, err := c.svc.RegisterTaskDefinition(input)
 	if err != nil {
