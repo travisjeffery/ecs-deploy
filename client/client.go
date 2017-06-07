@@ -110,14 +110,3 @@ func (c *Client) GetDeployment(cluster, service, arn *string) (*ecs.Deployment, 
 	}
 	return nil, nil
 }
-
-// GetContainerDefinitions get container definitions of the service.
-func (c *Client) GetContainerDefinitions(task *string) ([]*ecs.ContainerDefinition, error) {
-	output, err := c.svc.DescribeTaskDefinition(&ecs.DescribeTaskDefinitionInput{
-		TaskDefinition: task,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return output.TaskDefinition.ContainerDefinitions, nil
-}
