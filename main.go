@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"./client/"
+	"github.com/travisjeffery/ecs-deploy/client"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
