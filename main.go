@@ -42,21 +42,21 @@ func main() {
 		arn, err = c.RegisterTaskDefinition(task, image, tag)
 		if err != nil {
 			logger.Printf("[error] register task definition: %s\n", err)
-			return
+			os.Exit(1)
 		}
 	}
 
 	err = c.UpdateService(cluster, service, count, &arn)
 	if err != nil {
 		logger.Printf("[error] update service: %s\n", err)
-		return
+		os.Exit(1)
 	}
 
 	if *nowait == false {
 		err := c.Wait(cluster, service, &arn)
 		if err != nil {
 			logger.Printf("[error] wait: %s\n", err)
-			return
+			os.Exit(1)
 		}
 	}
 
