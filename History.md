@@ -1,3 +1,10 @@
+v1.3.0 / 2018-03-30
+===================
+
+  * return status code 1 on errors
+  * pass task arn and other attributes to register request
+  * allow multiple images
+
 v1.2.0 / 2015-12-16
 ===================
 
